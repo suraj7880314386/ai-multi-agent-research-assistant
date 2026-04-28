@@ -1,0 +1,50 @@
+version: "3.9"
+
+services:
+  # ─── Main Application ───────────────────────────────
+  app:
+    build: .
+    container_name: research-assistant
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - REDIS_URL=redis://redis:6379/0
+      - CHROMA_PERSIST_DIR=/app/chroma_data
+      - LLM_MODEL=gpt-4
+      - EMBEDDING_MODEL=all-MiniLM-L6-v2
+    volumes:
+      - chroma_data:/app/chroma_data
+      - uploads:/app/uploads
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - research-net
+
+  # ─── Redis (Conversational Memory) ──────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: research-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - research-net
+
+volumes:
+  chroma_data:
+  uploads:
+  redis_data:
+
+networks:
+  research-net:
+    driver: bridge
