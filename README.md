@@ -51,7 +51,7 @@ A production-ready multi-agent RAG (Retrieval-Augmented Generation) pipeline for
 
 ### 1. Clone & Configure
 ```bash
-git clone https://github.com/yourusername/ai-research-assistant.git
+git clone https://github.com/suraj7880314386/ai-research-assistant.git
 cd ai-research-assistant
 cp .env.example .env
 # Add your OPENAI_API_KEY to .env
